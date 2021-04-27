@@ -28,11 +28,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout',      [AuthApiController::class, 'logout']);
 
     // task methods
-    Route::post('/',       [Controller::class, '']); //get list of clients who made a paymend due to date (include payment amount)
-    Route::post('/',       [Controller::class, '']); //
+    Route::post('/payments/clients',    [ClientController::class, 'clientsWithPayment']); // list of clients and their payments due to date
+    Route::post('/employer/clients',    [EmployerController::class, 'clientsWithPayment']); // list of clients and their payments due to date grouped by employer
     Route::post('/payments',            [PaymentController::class, 'paymentsByDate']); //list of payments due to date
-    Route::post('/wages',               [EmployerController::class, 'wagesByMonth']); //list of full wage of employers grouped by month
-    Route::post('/wages/avarage',       [EmployerController::class, 'medianWagesByDate']); //avarage full wage of all employers due to date
-    Route::post('/payments/countries',  [PaymentController::class, 'paymentsByCounry']); //avarage payments amount grouped by counry
-    Route::post('/',       [Controller::class, '']); //amount of clients who make more than one payment with all employers
+    Route::get ('/wages',               [EmployerController::class, 'wagesByMonth']); //list of full wage of employers grouped by month
+    Route::post('/wages/avarage',       [EmployerController::class, 'avarageWagesByDate']); //avarage full wage of all employers due to date
+    Route::get ('/payments/countries',  [PaymentController::class, 'paymentsByCounry']); //avarage payments amount grouped by counry
+    Route::get ('/clients',             [ClientController::class, 'clients']); //amount of clients who make more than one payment with all employers
 });

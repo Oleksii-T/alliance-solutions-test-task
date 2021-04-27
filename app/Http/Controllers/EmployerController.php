@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\BaseApiController as BaseApiController;
 use App\Http\Controllers\UsdExchangeController;
 use App\Http\Requests\WithDateIntervalRequest;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Employer;
 use App\Models\Payment;
@@ -12,6 +13,36 @@ use Carbon\Carbon;
 
 class EmployerController extends BaseApiController
 {
+    // list of clients and their payments due to date grouped by employer
+    public function clientsWithPayment(WithDateIntervalRequest $request)
+    {
+        $input = $request->validated();
+
+        $employers = Employer::whereHas('payments', function (Builder $query) use ($input) {
+            return $query->where('verified_at', '>=', $input['from'])->where('verified_at', '<', $input['to']);
+        })->with(array('payments'=>function($query) use ($input){
+            return $query->whereDate('verified_at', '>=', $input['from'])->whereDate('verified_at', '<', $input['to'])->with('client');
+        }))->get();
+
+        //return $this->sendResponse($employers, 'Clients and their payments due to date grouped by employer retrieved successfully');
+
+        // simplify for readability
+        foreach ($employers as $e) {
+            $result[$e->name] = [
+                'position' => $e->position
+            ];
+            foreach ($e->payments as $p) {
+                $result[$e->name]['client-payments'][] = [
+                    'client' => $p->client->name,
+                    'amount' => $p->amount,
+                    'currency' => $p->currency
+                ];
+            }
+        }
+
+        return $this->sendResponse($result, 'Clients and their payments due to date grouped by employer retrieved successfully');
+    }
+
      //list of full wage of employers grouped by month
     public function wagesByMonth()
     {
@@ -64,7 +95,7 @@ class EmployerController extends BaseApiController
     }
 
     // get average full wage of all employers due to date
-    public function medianWagesByDate(WithDateIntervalRequest $request) 
+    public function avarageWagesByDate(WithDateIntervalRequest $request) 
     {
         $input = $request->validated();
 

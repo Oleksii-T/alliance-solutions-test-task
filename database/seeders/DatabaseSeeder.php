@@ -39,5 +39,17 @@ class DatabaseSeeder extends Seeder
         \App\Models\Employer::factory()->count(20)->create();
         \App\Models\Client::factory()->count(2000)->create();
         \App\Models\Payment::factory()->count(6000)->create();
+
+        // simulate case for last task
+        for ($i=1; $i < 21; $i++) { 
+            \App\Models\Payment::create([
+                'employer_id' => $i,
+                'client_id' => '5',
+                'amount' => 2000+$i,
+                'currency' => 'USD',
+                'verified_at' => '2021-02-02',
+            ]);
+        }
+
     }
 }

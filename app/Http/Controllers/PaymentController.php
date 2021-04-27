@@ -20,7 +20,7 @@ class PaymentController extends BaseApiController
         return $this->sendResponse($result, 'Payments due to date retrieved successfully');
     }
 
-    //avarage payments amount grouped by counry (USD)
+    //avarage payments amount(USD) grouped by counry 
     public function paymentsByCounry() 
     {
         $payments = Payment::with('client')->get()->groupBy('client.country');

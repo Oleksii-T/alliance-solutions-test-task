@@ -30,3 +30,5 @@
 - миграции.
 
 Для выполнение не нужен UI, необходимо создать API по правилам и соглашению REST.
+
+[Postman collection](https://www.getpostman.com/collections/b01cb7e63faca5be17ae)
